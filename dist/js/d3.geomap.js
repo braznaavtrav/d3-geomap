@@ -315,7 +315,13 @@ var colorbrewer = { YlGn: {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _topojson = require('topojson');
+
+var _topojson2 = _interopRequireDefault(_topojson);
 
 var Geomap = (function () {
     function Geomap() {
@@ -406,7 +412,7 @@ var Geomap = (function () {
             // Load and render geo data.
             d3.json(self.properties.geofile, function (error, geo) {
                 self.geo = geo;
-                self.svg.append('g').attr('class', 'units zoom').selectAll('path').data(topojson.feature(geo, geo.objects[self.properties.units]).features).enter().append('path').attr('class', function (d) {
+                self.svg.append('g').attr('class', 'units zoom').selectAll('path').data(_topojson2['default'].feature(geo, geo.objects[self.properties.units]).features).enter().append('path').attr('class', function (d) {
                     return 'unit ' + self.properties.unitPrefix + d.id;
                 }).attr('d', self.path).on('click', self.clicked.bind(self)).append('title').text(self.properties.unitTitle);
                 self.update();

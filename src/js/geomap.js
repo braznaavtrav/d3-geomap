@@ -1,3 +1,5 @@
+import topojson from 'topojson';
+
 class Geomap {
     constructor() {
         // Set default properties optimized for naturalEarth projection.
