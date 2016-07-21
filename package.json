@@ -33,5 +33,6 @@
     "gulp-ruby-sass": "^0.4.3",
     "gulp-uglify": "^0.2.1",
     "gulp-zip": "^2.0.3"
-  }
+  },
+  "main": "dist/js/d3.geomap.js"
 }
