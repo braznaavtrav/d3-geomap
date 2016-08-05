@@ -401,18 +401,42 @@ var Geomap = (function () {
 
             self.svg.append('rect').attr('class', 'background').attr('width', self.properties.width).attr('height', self.properties.height).on('click', self.clicked.bind(self));
 
-            // Set map projection and path.
-            var proj = self.properties.projection().scale(self.properties.scale).translate(self.properties.translate).precision(.1);
-
-            // Not every projection supports rotation, e. g. albersUsa does not.
-            if (proj.hasOwnProperty('rotate') && self.properties.rotate) proj.rotate(self.properties.rotate);
-
-            self.path = d3.geo.path().projection(proj);
-
             // Load and render geo data.
             d3.json(self.properties.geofile, function (error, geo) {
+                var json = _topojson2['default'].feature(geo, geo.objects[self.properties.units]);
+                var center = d3.geo.centroid(json);
+
+                // Set map projection and path.
+                var proj = self.properties.projection().scale(1).translate([self.properties.width / 2, self.properties.height / 2]);
+
+                if (typeof proj.center === 'function') {
+                    proj.center(center);
+                }
+
+                // Not every projection supports rotation, e. g. albersUsa does not.
+                if (proj.hasOwnProperty('rotate') && self.properties.rotate) proj.rotate(self.properties.rotate);
+
+                self.path = d3.geo.path().projection(proj);
+
+                var b = self.path.bounds(json);
+                var bS = b[0][1];
+                var bN = b[1][1];
+                var bW = b[0][0];
+                var bE = b[1][0];
+                var bHeight = Math.abs(bN - bS);
+                var bWidth = Math.abs(bE - bW);
+                var s = .8 / Math.max(bWidth / self.properties.width, bHeight / self.properties.height);
+
+                proj.scale(s);
+
+                if (typeof proj.center === 'function') {
+                    proj.translate([self.properties.width / 2, self.properties.height / 2]);
+                } else {
+                    proj.translate([self.properties.width / 2, self.properties.height / 2]);
+                }
+
                 self.geo = geo;
-                self.svg.append('g').attr('class', 'units zoom').selectAll('path').data(_topojson2['default'].feature(geo, geo.objects[self.properties.units]).features).enter().append('path').attr('class', function (d) {
+                self.svg.append('g').attr('class', 'units zoom').selectAll('path').data(json.features).enter().append('path').attr('class', function (d) {
                     return 'unit ' + self.properties.unitPrefix + d.id;
                 }).attr('d', self.path).on('click', self.clicked.bind(self)).append('title').text(self.properties.unitTitle);
                 self.update();
