@@ -68,7 +68,7 @@ class Geomap {
             self.properties.height = self.properties.width / 1.92;
 
         if (!self.properties.scale)
-            self.properties.scale = self.properties.width / 5.8;
+            self.properties.scale = 0.8;
 
         if (!self.properties.translate)
             self.properties.translate = [self.properties.width / 2, self.properties.height / 2];
@@ -113,21 +113,11 @@ class Geomap {
             var bE = b[1][0];
             var bHeight = Math.abs(bN - bS);
             var bWidth = Math.abs(bE - bW);
-            var s = .8 / Math.max(bWidth / self.properties.width, (bHeight / self.properties.height));
+            var s = self.properties.scale / Math.max(bWidth / self.properties.width, (bHeight / self.properties.height));
 
             proj.scale(s);
 
-            if (typeof proj.center === 'function') {
-                proj.translate([
-                    self.properties.width / 2,
-                    self.properties.height / 2
-                ]);
-            } else {
-                proj.translate([
-                    self.properties.width / 2,
-                    self.properties.height / 2
-                ]);
-            }
+            proj.translate(self.properties.translate);
 
             self.geo = geo;
             self.svg.append('g').attr('class', 'units zoom')
