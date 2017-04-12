@@ -403,7 +403,7 @@ var Geomap = (function () {
 
             // Load and render geo data.
             d3.json(self.properties.geofile, function (error, geo) {
-                var json = _topojson2['default'].feature(geo, geo.objects[self.properties.units]);
+                var json = _topojson2.feature(geo, geo.objects[self.properties.units]);
                 var center = d3.geo.centroid(json);
 
                 // Set map projection and path.
